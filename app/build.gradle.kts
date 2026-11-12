@@ -18,8 +18,8 @@ android {
         applicationId = "com.anees.caller"
         minSdk = 24
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = 3
+        versionName = "1.0.2"
         buildConfigField("String", "UPDATE_REPO", "\"anees-dahot/caller-app\"")
     }
 
@@ -30,6 +30,12 @@ android {
                 storePassword = keyProps["storePassword"] as String
                 keyAlias = keyProps["keyAlias"] as String
                 keyPassword = keyProps["keyPassword"] as String
+                // Sign with every scheme the platform understands. Some older
+                // OEM package installers (Infinix/Tecno XOS on Android 9) reject
+                // APKs that carry a v2 signature but no v1 JAR signature.
+                enableV1Signing = true
+                enableV2Signing = true
+                enableV3Signing = true
             }
         }
     }
