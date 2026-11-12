@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/row_bg"
+    android:gravity="center_vertical"
+    android:minHeight="64dp"
+    android:orientation="horizontal"
+    android:paddingStart="16dp"
+    android:paddingEnd="6dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <TextView android:id="@+id/num" android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFeatureSettings="tnum" android:textColor="@color/ink" android:textSize="17sp" />
+        <TextView android:id="@+id/label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:textColor="@color/ink_2" android:textSize="13sp" />
+    </LinearLayout>
+
+    <ImageButton android:id="@+id/sms" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/key_bg" android:contentDescription="Message" android:src="@drawable/ic_message" app:tint="@color/ink_2" />
+    <ImageButton android:id="@+id/dial" android:layout_width="44dp" android:layout_height="44dp" android:background="@drawable/key_bg" android:contentDescription="Call" android:src="@drawable/ic_call" app:tint="@color/accent" />
+</LinearLayout>

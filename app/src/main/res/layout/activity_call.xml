@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp">
+
+    <TextView
+        android:id="@+id/state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:textColor="@color/call_ink_2"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/callAvatar"
+        android:layout_width="112dp"
+        android:layout_height="112dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/avatar_bg"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:textSize="44sp" />
+
+    <TextView
+        android:id="@+id/callName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textColor="@color/call_ink"
+        android:textSize="32sp" />
+
+    <TextView
+        android:id="@+id/callNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:fontFeatureSettings="tnum"
+        android:gravity="center"
+        android:textColor="@color/call_ink_2"
+        android:textSize="16sp" />
+
+    <Chronometer
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFeatureSettings="tnum"
+        android:textColor="@color/go"
+        android:textSize="17sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/second_bg"
+        android:paddingStart="14dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/call_ink_2"
+        android:textSize="13sp"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/dtmfPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/dtmfText"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:ellipsize="start"
+                android:fontFeatureSettings="tnum"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/call_ink"
+                android:textSize="28sp" />
+
+            <LinearLayout
+                android:id="@+id/dtmfGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <LinearLayout android:id="@+id/mute" style="@style/Ctrl">
+                <ImageView style="@style/CtrlIcon" android:src="@drawable/ic_mic_off" android:importantForAccessibility="no" />
+                <TextView style="@style/CtrlLabel" android:text="Mute" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/keys" style="@style/Ctrl">
+                <ImageView style="@style/CtrlIcon" android:src="@drawable/ic_dialpad" android:importantForAccessibility="no" />
+                <TextView style="@style/CtrlLabel" android:text="Keypad" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/speaker" style="@style/Ctrl">
+                <ImageView style="@style/CtrlIcon" android:src="@drawable/ic_volume" android:importantForAccessibility="no" />
+                <TextView android:id="@+id/speakerLabel" style="@style/CtrlLabel" android:text="Speaker" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <LinearLayout android:id="@+id/hold" style="@style/Ctrl">
+                <ImageView style="@style/CtrlIcon" android:src="@drawable/ic_pause" android:importantForAccessibility="no" />
+                <TextView style="@style/CtrlLabel" android:text="Hold" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/swap" style="@style/Ctrl">
+                <ImageView style="@style/CtrlIcon" android:src="@drawable/ic_swap" android:importantForAccessibility="no" />
+                <TextView style="@style/CtrlLabel" android:text="Swap" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/merge" style="@style/Ctrl">
+                <ImageView style="@style/CtrlIcon" android:src="@drawable/ic_merge" android:importantForAccessibility="no" />
+                <TextView style="@style/CtrlLabel" android:text="Merge" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/incoming"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center_horizontal" android:orientation="vertical">
+            <ImageButton android:id="@+id/decline" android:layout_width="76dp" android:layout_height="76dp" android:background="@drawable/round_stop" android:contentDescription="@string/decline" android:src="@drawable/ic_call_end" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="@string/decline" android:textColor="@color/call_ink_2" android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center_horizontal" android:orientation="vertical">
+            <ImageButton android:id="@+id/answer" android:layout_width="76dp" android:layout_height="76dp" android:background="@drawable/round_go" android:contentDescription="@string/answer" android:src="@drawable/ic_call" android:tint="#FFFFFF" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="@string/answer" android:textColor="@color/call_ink_2" android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/smsReply"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="-36dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/second_bg"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="Reply with message"
+        android:textColor="@color/call_ink_2"
+        android:textSize="13sp"
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/end"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="48dp"
+        android:background="@drawable/round_stop"
+        android:contentDescription="@string/hang_up"
+        android:src="@drawable/ic_call_end" />
+</LinearLayout>

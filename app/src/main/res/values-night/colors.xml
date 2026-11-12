@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#0B0D10</color>
+    <color name="surface">#16191D</color>
+    <color name="ink">#EEF0F3</color>
+    <color name="ink_2">#A2AAB5</color>
+    <color name="ink_3">#68717D</color>
+    <color name="rule">#24282E</color>
+    <color name="key_fill">#1A1E23</color>
+    <color name="pressed">#1FFFFFFF</color>
+    <color name="accent">#3CCB85</color>
+    <color name="accent_soft">#143323</color>
+    <color name="accent_ink">#06120B</color>
+    <color name="missed">#FF6B6E</color>
+</resources>

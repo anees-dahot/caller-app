@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#F3F4F6</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="ink">#111418</color>
+    <color name="ink_2">#5A6370</color>
+    <color name="ink_3">#97A0AC</color>
+    <color name="rule">#E7E9ED</color>
+    <color name="key_fill">#E9EBEF</color>
+    <color name="pressed">#14111418</color>
+    <color name="accent">#14945A</color>
+    <color name="accent_soft">#DDF2E6</color>
+    <color name="accent_ink">#FFFFFF</color>
+    <color name="missed">#E0393E</color>
+    <color name="go">#1DB86A</color>
+    <color name="stop">#EB4447</color>
+    <color name="call_bg">#0E1013</color>
+    <color name="call_ink">#F3F4F6</color>
+    <color name="call_ink_2">#8C949F</color>
+    <color name="call_ctrl">#1E2227</color>
+    <color name="call_ctrl_on">#F3F4F6</color>
+    <color name="launcher_bg">#14945A</color>
+</resources>
