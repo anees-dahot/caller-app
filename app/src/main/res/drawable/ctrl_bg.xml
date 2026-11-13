@@ -1,5 +1,5 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_activated="true"><shape android:shape="oval"><solid android:color="@color/call_ctrl_on"/></shape></item>
-    <item android:state_pressed="true"><shape android:shape="oval"><solid android:color="#2C3138"/></shape></item>
+    <item android:state_pressed="true"><shape android:shape="oval"><solid android:color="#3DFFFFFF"/></shape></item>
     <item><shape android:shape="oval"><solid android:color="@color/call_ctrl"/></shape></item>
 </selector>

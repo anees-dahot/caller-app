@@ -1,3 +1,3 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="@color/pressed">
-    <item><shape><solid android:color="@color/surface"/><corners android:topLeftRadius="0dp" android:topRightRadius="0dp" android:bottomLeftRadius="18dp" android:bottomRightRadius="18dp"/></shape></item>
+    <item><shape><solid android:color="@color/surface"/><corners android:topLeftRadius="0dp" android:topRightRadius="0dp" android:bottomLeftRadius="24dp" android:bottomRightRadius="24dp"/></shape></item>
 </ripple>

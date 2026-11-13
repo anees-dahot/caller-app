@@ -123,6 +123,26 @@ class CallActivity : AppCompatActivity() {
         if (pm.isWakeLockLevelSupported(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK)) {
             proximity = pm.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, "caller:proximity")
         }
+        handleAction(intent)
+    }
+
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleAction(intent)
+    }
+
+    private fun handleAction(i: android.content.Intent?) {
+        if (i?.action == CallActionReceiver.ANSWER) {
+            CallManager.answer()
+            i.action = null
+        }
+    }
+
+    override fun onDestroy() {
+        pulsing?.cancel()
+        releaseProximity()
+        super.onDestroy()
     }
 
     @Suppress("DEPRECATION")
@@ -149,7 +169,8 @@ class CallActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         CallManager.unlisten(listener)
-        releaseProximity()
+        // Keep proximity lock here: the sensor turning the screen off can stop the
+        // activity, and releasing then would flash the screen back on against the cheek.
     }
 
     @SuppressLint("MissingSuperCall")
@@ -195,6 +216,7 @@ class CallActivity : AppCompatActivity() {
         findViewById<View>(R.id.end).visibility = if (ringing) View.GONE else View.VISIBLE
         findViewById<View>(R.id.controls).visibility = if (ringing) View.INVISIBLE else View.VISIBLE
         if (ringing) dtmfPanel.visibility = View.GONE
+        pulse(ringing)
 
         // Timer from real connect time so it survives screen re-creation.
         val connected = call.details.connectTimeMillis
@@ -238,7 +260,8 @@ class CallActivity : AppCompatActivity() {
         // Proximity: only during an earpiece call, so the cheek doesn't press buttons.
         if (!ringing && route == CallAudioState.ROUTE_EARPIECE && s != Call.STATE_DISCONNECTED) acquireProximity() else releaseProximity()
 
-        if (s == Call.STATE_SELECT_PHONE_ACCOUNT && !accountDialogShown) pickAccount(call)
+        if (s == Call.STATE_SELECT_PHONE_ACCOUNT) { if (!accountDialogShown) pickAccount(call) }
+        else accountDialogShown = false
     }
 
     @SuppressLint("MissingPermission")
@@ -305,6 +328,27 @@ class CallActivity : AppCompatActivity() {
     private fun releaseProximity() {
         val p = proximity ?: return
         if (p.isHeld) p.release(PowerManager.RELEASE_FLAG_WAIT_FOR_NO_PROXIMITY)
+    }
+
+    private var pulsing: android.animation.Animator? = null
+
+    /** Soft breathing ring around the avatar while the phone rings. */
+    private fun pulse(on: Boolean) {
+        val ring = findViewById<View>(R.id.callRing)
+        if (on && pulsing == null) {
+            val sx = android.animation.PropertyValuesHolder.ofFloat(View.SCALE_X, 0.8f, 1.05f)
+            val sy = android.animation.PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.8f, 1.05f)
+            val a = android.animation.PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
+            pulsing = android.animation.ObjectAnimator.ofPropertyValuesHolder(ring, sx, sy, a).apply {
+                duration = 1400
+                repeatCount = android.animation.ValueAnimator.INFINITE
+                interpolator = android.view.animation.DecelerateInterpolator()
+                start()
+            }
+        } else if (!on && pulsing != null) {
+            pulsing?.cancel(); pulsing = null
+            ring.scaleX = 1f; ring.scaleY = 1f; ring.alpha = 1f
+        }
     }
 
     private fun View.able(on: Boolean) { isEnabled = on; alpha = if (on) 1f else 0.35f }

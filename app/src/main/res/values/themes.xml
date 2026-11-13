@@ -7,7 +7,7 @@
         <item name="colorControlNormal">@color/ink_2</item>
         <item name="android:windowBackground">@color/bg</item>
         <item name="android:statusBarColor">@color/bg</item>
-        <item name="android:navigationBarColor">@color/surface</item>
+        <item name="android:navigationBarColor">@color/bg</item>
         <item name="android:windowLightStatusBar">@bool/light_bars</item>
         <item name="android:textColorPrimary">@color/ink</item>
         <item name="android:textColorSecondary">@color/ink_2</item>
@@ -27,8 +27,8 @@
     </style>
 
     <style name="Theme.Caller.Call" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@color/call_bg</item>
-        <item name="android:statusBarColor">@color/call_bg</item>
+        <item name="android:windowBackground">@drawable/call_gradient</item>
+        <item name="android:statusBarColor">@color/call_bg_top</item>
         <item name="android:navigationBarColor">@color/call_bg</item>
         <item name="colorAccent">@color/go</item>
     </style>
@@ -56,8 +56,8 @@
     </style>
 
     <style name="NavIcon">
-        <item name="android:layout_width">56dp</item>
-        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">32dp</item>
         <item name="android:background">@drawable/nav_pill</item>
         <item name="android:scaleType">center</item>
         <item name="android:duplicateParentState">true</item>
@@ -87,8 +87,8 @@
     </style>
 
     <style name="CtrlIcon">
-        <item name="android:layout_width">64dp</item>
-        <item name="android:layout_height">64dp</item>
+        <item name="android:layout_width">68dp</item>
+        <item name="android:layout_height">68dp</item>
         <item name="android:background">@drawable/ctrl_bg</item>
         <item name="android:scaleType">center</item>
         <item name="android:duplicateParentState">true</item>
@@ -109,8 +109,9 @@
         <item name="android:paddingStart">20dp</item>
         <item name="android:paddingTop">20dp</item>
         <item name="android:paddingBottom">8dp</item>
-        <item name="android:textColor">@color/ink_2</item>
+        <item name="android:textColor">@color/accent</item>
         <item name="android:textSize">13sp</item>
+        <item name="android:letterSpacing">0.04</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 </resources>

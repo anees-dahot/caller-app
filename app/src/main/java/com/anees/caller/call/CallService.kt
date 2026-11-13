@@ -117,7 +117,15 @@ class CallService : InCallService() {
             b.priority = NotificationCompat.PRIORITY_MAX
             b.setFullScreenIntent(open, true)
             b.addAction(0, getString(R.string.decline), pi(CallActionReceiver.DECLINE, 1))
-            b.addAction(0, getString(R.string.answer), pi(CallActionReceiver.ANSWER, 2))
+            // Answer opens the call screen directly: Android 12+ blocks starting
+            // activities from a broadcast fired by a notification action.
+            val answer = PendingIntent.getActivity(
+                this, 2,
+                Intent(this, CallActivity::class.java).setAction(CallActionReceiver.ANSWER)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            )
+            b.addAction(0, getString(R.string.answer), answer)
         } else {
             b.priority = NotificationCompat.PRIORITY_LOW
             val connected = call.details.connectTimeMillis

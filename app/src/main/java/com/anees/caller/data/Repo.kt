@@ -81,8 +81,8 @@ object Repo {
         )
         try {
             ctx.contentResolver.query(
-                Phone.CONTENT_URI, proj, null, null,
-                "${Phone.DISPLAY_NAME_PRIMARY} COLLATE LOCALIZED ASC",
+                // No COLLATE in sort order: some OEM contact providers reject it. Sort below.
+                Phone.CONTENT_URI, proj, null, null, null,
             )?.use { c ->
                 while (c.moveToNext()) {
                     val id = c.getLong(0)
@@ -97,9 +97,11 @@ object Repo {
                     }
                 }
             }
-        } catch (_: SecurityException) {
+        } catch (_: Exception) {
+            // SecurityException, or provider-specific SQL errors on OEM ROMs.
         }
-        return out.values.toList().also { contactsCache = it }
+        val collator = java.text.Collator.getInstance()
+        return out.values.sortedWith { a, b -> collator.compare(a.name, b.name) }.also { contactsCache = it }
     }
 
     fun loadCalls(ctx: Context, limit: Int = 500, number: String? = null): List<CallEntry> {
@@ -122,7 +124,7 @@ object Repo {
                     )
                 }
             }
-        } catch (_: SecurityException) {
+        } catch (_: Exception) {
         }
         return list
     }

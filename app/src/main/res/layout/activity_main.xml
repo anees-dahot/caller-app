@@ -8,10 +8,10 @@
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="76dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="20dp"
+        android:paddingStart="24dp"
         android:paddingEnd="8dp">
 
         <TextView
@@ -19,9 +19,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="sans-serif"
+            android:letterSpacing="-0.02"
             android:textColor="@color/ink"
-            android:textSize="28sp" />
+            android:textSize="34sp"
+            android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/addContact"
@@ -39,11 +41,12 @@
     <LinearLayout
         android:id="@+id/searchBox"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="52dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/search_bg"
+        android:elevation="1dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="16dp"
@@ -119,7 +122,7 @@
             android:clipToPadding="false"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
-            android:paddingBottom="16dp" />
+            android:paddingBottom="24dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/contacts"
@@ -128,7 +131,7 @@
             android:clipToPadding="false"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
-            android:paddingBottom="16dp"
+            android:paddingBottom="24dp"
             android:visibility="gone" />
 
         <include
@@ -150,10 +153,16 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:background="@color/surface"
+        android:layout_height="68dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/nav_bar_bg"
+        android:elevation="6dp"
         android:orientation="horizontal"
-        android:paddingTop="4dp">
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
 
         <LinearLayout android:id="@+id/tabRecents" style="@style/NavItem">
             <ImageView style="@style/NavIcon" android:src="@drawable/ic_clock" android:importantForAccessibility="no" />

@@ -32,14 +32,14 @@
 
             <TextView
                 android:id="@+id/bigAvatar"
-                android:layout_width="104dp"
-                android:layout_height="104dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/avatar_bg"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
-                android:textSize="42sp" />
+                android:textSize="48sp" />
 
             <TextView
                 android:id="@+id/cName"
@@ -49,7 +49,8 @@
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:textColor="@color/ink"
-                android:textSize="26sp" />
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/cSub"
@@ -63,13 +64,13 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="76dp"
+                android:layout_height="80dp"
                 android:layout_marginTop="24dp"
                 android:orientation="horizontal">
 
-                <LinearLayout android:id="@+id/actCall" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginEnd="6dp" android:background="@drawable/action_tile" android:gravity="center" android:orientation="vertical">
-                    <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_call" app:tint="@color/accent" android:importantForAccessibility="no" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="Call" android:textColor="@color/ink" android:textSize="13sp" android:fontFamily="sans-serif-medium" />
+                <LinearLayout android:id="@+id/actCall" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginEnd="6dp" android:background="@drawable/action_tile_accent" android:gravity="center" android:orientation="vertical">
+                    <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_call" app:tint="@color/accent_ink" android:importantForAccessibility="no" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="Call" android:textColor="@color/accent_ink" android:textSize="13sp" android:fontFamily="sans-serif-medium" />
                 </LinearLayout>
 
                 <LinearLayout android:id="@+id/actSms" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:layout_marginStart="6dp" android:layout_marginEnd="6dp" android:background="@drawable/action_tile" android:gravity="center" android:orientation="vertical">

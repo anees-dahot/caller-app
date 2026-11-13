@@ -52,8 +52,7 @@
             android:name=".ui.CallRouterActivity"
             android:exported="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:excludeFromRecents="true"
-            android:noHistory="true">
+            android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.CALL" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -81,9 +80,6 @@
             android:permission="android.permission.BIND_INCALL_SERVICE">
             <meta-data
                 android:name="android.telecom.IN_CALL_SERVICE_UI"
-                android:value="true" />
-            <meta-data
-                android:name="android.telecom.IN_CALL_SERVICE_RINGING"
                 android:value="true" />
             <intent-filter>
                 <action android:name="android.telecom.InCallService" />

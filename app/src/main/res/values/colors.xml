@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg">#F3F4F6</color>
+    <color name="bg">#F5F6FB</color>
     <color name="surface">#FFFFFF</color>
-    <color name="ink">#111418</color>
-    <color name="ink_2">#5A6370</color>
-    <color name="ink_3">#97A0AC</color>
-    <color name="rule">#E7E9ED</color>
-    <color name="key_fill">#E9EBEF</color>
-    <color name="pressed">#14111418</color>
-    <color name="accent">#14945A</color>
-    <color name="accent_soft">#DDF2E6</color>
+    <color name="ink">#0F1222</color>
+    <color name="ink_2">#555B70</color>
+    <color name="ink_3">#9096A8</color>
+    <color name="rule">#E7E9F1</color>
+    <color name="key_fill">#EEF0F8</color>
+    <color name="pressed">#1A4F46E5</color>
+    <color name="accent">#4F46E5</color>
+    <color name="accent_soft">#E7E6FD</color>
     <color name="accent_ink">#FFFFFF</color>
-    <color name="missed">#E0393E</color>
-    <color name="go">#1DB86A</color>
-    <color name="stop">#EB4447</color>
-    <color name="call_bg">#0E1013</color>
-    <color name="call_ink">#F3F4F6</color>
-    <color name="call_ink_2">#8C949F</color>
-    <color name="call_ctrl">#1E2227</color>
-    <color name="call_ctrl_on">#F3F4F6</color>
+    <color name="missed">#E5484D</color>
+    <color name="go">#22C55E</color>
+    <color name="stop">#EF4444</color>
+    <color name="nav_bg">#FFFFFF</color>
+    <color name="call_bg">#090A16</color>
+    <color name="call_bg_top">#262A6E</color>
+    <color name="call_ink">#F5F6FA</color>
+    <color name="call_ink_2">#A6ABC6</color>
+    <color name="call_ctrl">#24FFFFFF</color>
+    <color name="call_ctrl_on">#F5F6FA</color>
     <color name="launcher_bg">#14945A</color>
 </resources>

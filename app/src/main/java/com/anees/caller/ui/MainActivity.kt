@@ -145,11 +145,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         refreshBanner()
-        if (hasCore()) {
-            contentResolver.registerContentObserver(CallLog.Calls.CONTENT_URI, true, observer)
-            contentResolver.registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, observer)
-            load()
-        }
+        registerObservers()
+        load()
+        // Ask once on first launch; contacts and recents do not need the default-dialer role.
+        if (!hasCore() && !getPreferences(MODE_PRIVATE).getBoolean("asked", false)) askPerms()
         tone = try { ToneGenerator(AudioManager.STREAM_DTMF, 70) } catch (_: Exception) { null }
     }
 
@@ -162,7 +161,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        main.removeCallbacks(reload)
         io.shutdownNow()
+    }
+
+    private fun registerObservers() {
+        try { contentResolver.unregisterContentObserver(observer) } catch (_: Exception) {}
+        if (has(Manifest.permission.READ_CALL_LOG)) {
+            contentResolver.registerContentObserver(CallLog.Calls.CONTENT_URI, true, observer)
+        }
+        if (has(Manifest.permission.READ_CONTACTS)) {
+            contentResolver.registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, observer)
+        }
     }
 
     // ---------- permissions + default dialer ----------
@@ -177,6 +187,8 @@ class MainActivity : AppCompatActivity() {
             return p.toTypedArray()
         }
 
+    private fun has(p: String) = ContextCompat.checkSelfPermission(this, p) == PackageManager.PERMISSION_GRANTED
+
     private fun hasCore() = listOf(Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALL_LOG).all {
         ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
@@ -185,17 +197,17 @@ class MainActivity : AppCompatActivity() {
         val text = findViewById<TextView>(R.id.bannerText)
         val btn = findViewById<TextView>(R.id.bannerBtn)
         when {
-            !Dialer.isDefault(this) -> {
-                banner.visibility = View.VISIBLE
-                text.setText(R.string.set_default)
-                btn.setText(R.string.set_default_btn)
-                btn.setOnClickListener { Dialer.requestDefault(this) }
-            }
             !hasCore() -> {
                 banner.visibility = View.VISIBLE
                 text.setText(R.string.perm_needed)
                 btn.setText(R.string.perm_btn)
                 btn.setOnClickListener { askPerms() }
+            }
+            !Dialer.isDefault(this) -> {
+                banner.visibility = View.VISIBLE
+                text.setText(R.string.set_default)
+                btn.setText(R.string.set_default_btn)
+                btn.setOnClickListener { Dialer.requestDefault(this) }
             }
             else -> banner.visibility = View.GONE
         }
@@ -211,8 +223,19 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, android.net.Uri.fromParts("package", packageName, null)))
         } else {
             prefs.edit().putBoolean("asked", true).apply()
-            requestPermissions(missing.toTypedArray(), 1)
+            // Contacts alone first: call log is restricted for non-default dialers on many
+            // phones and can make a combined request fail silently.
+            if (Manifest.permission.READ_CONTACTS in missing) {
+                requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS), REQ_CONTACTS)
+            } else {
+                requestPermissions(missing.toTypedArray(), REQ_REST)
+            }
         }
+    }
+
+    private fun askRest() {
+        val rest = corePerms.filter { !has(it) && it != Manifest.permission.READ_CONTACTS }
+        if (rest.isNotEmpty()) requestPermissions(rest.toTypedArray(), REQ_REST)
     }
 
     @Deprecated("Deprecated in Java")
@@ -226,29 +249,50 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Dialer.onPermissionResult(this, requestCode, grantResults)
         refreshBanner()
-        if (hasCore()) load()
+        registerObservers()
+        load()
+        if (requestCode == REQ_CONTACTS) askRest()
     }
 
     // ---------- data ----------
 
+    /** Last 9 digits (or whole number if shorter) -> contact name, for fast recents lookup. */
+    private var names: Map<String, String> = emptyMap()
+
+    private fun numKey(d: String) = if (d.length >= 7) d.takeLast(9) else d
+
     private fun load() {
-        if (!hasCore()) return
-        io.execute {
-            val c = Repo.loadContacts(this)
-            val l = Repo.group(Repo.loadCalls(this))
-            main.post {
-                if (isFinishing) return@post
-                contacts = c; calls = l
-                render()
+        val canContacts = has(Manifest.permission.READ_CONTACTS)
+        val canCalls = has(Manifest.permission.READ_CALL_LOG)
+        if (io.isShutdown) return
+        if (!canContacts && !canCalls) {
+            // Permission revoked: don't keep showing old data.
+            if (contacts.isNotEmpty() || calls.isNotEmpty()) { contacts = emptyList(); calls = emptyList(); names = emptyMap(); render() }
+            return
+        }
+        try {
+            io.execute {
+                val c = if (canContacts) Repo.loadContacts(this) else emptyList()
+                val l = if (canCalls) Repo.group(Repo.loadCalls(this)) else emptyList()
+                val m = HashMap<String, String>()
+                for (ct in c) for (d in ct.digits) if (d.isNotEmpty()) m.putIfAbsent(numKey(d), ct.name)
+                main.post {
+                    if (isFinishing || isDestroyed) return@post
+                    contacts = c; calls = l; names = m
+                    render()
+                }
             }
+        } catch (_: java.util.concurrent.RejectedExecutionException) {
         }
     }
 
     private fun nameFor(number: String): String? {
         if (number.isBlank()) return null
         val d = T9.digitsOnly(number)
-        return contacts.firstOrNull { c -> c.digits.any { it == d || (d.length >= 7 && it.endsWith(d.takeLast(9))) } }?.name
+        if (d.isEmpty()) return null
+        return names[numKey(d)]
     }
 
     private fun render() {
@@ -318,6 +362,11 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.searchBox).visibility = if (tab == 2) View.GONE else View.VISIBLE
         findViewById<View>(R.id.addContact).visibility = if (tab == 1) View.VISIBLE else View.GONE
         title.text = getString(if (tab == 0) R.string.tab_recents else R.string.tab_contacts)
+        listOf(recentsList, contactsList, keypad)[tab].apply {
+            alpha = 0f; translationY = 12 * resources.displayMetrics.density
+            animate().alpha(1f).translationY(0f).setDuration(180)
+                .setInterpolator(android.view.animation.DecelerateInterpolator()).start()
+        }
         if (tab == 2) {
             search.clearFocus()
             (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(search.windowToken, 0)
@@ -432,18 +481,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun callVoicemail() {
+        if (!has(Manifest.permission.CALL_PHONE)) {
+            requestPermissions(arrayOf(Manifest.permission.CALL_PHONE), Dialer.REQ_CALL)
+            return
+        }
         try {
+            // voicemail: URI lets Telecom dial the SIM's voicemail number itself.
             val tm = getSystemService(Context.TELECOM_SERVICE) as android.telecom.TelecomManager
             @Suppress("MissingPermission")
-            val vm = try { (getSystemService(Context.TELEPHONY_SERVICE) as android.telephony.TelephonyManager).voiceMailNumber } catch (_: Exception) { null }
-            if (!vm.isNullOrBlank()) call(vm)
-            else Toast.makeText(this, "No voicemail number", Toast.LENGTH_SHORT).show()
-            tm.hashCode()
+            tm.placeCall(android.net.Uri.fromParts("voicemail", "", null), Bundle())
         } catch (_: Exception) {
+            Toast.makeText(this, "No voicemail number", Toast.LENGTH_SHORT).show()
         }
     }
 
     companion object {
+        private const val REQ_CONTACTS = 1
+        private const val REQ_REST = 2
         /** Shared by keypad and in-call DTMF pad. */
         fun buildKeyGrid(
             ctx: Context, grid: LinearLayout, keys: List<Pair<String, String>>,
@@ -473,7 +527,8 @@ class MainActivity : AppCompatActivity() {
                     slot.addView(cell)
                     cell.addView(TextView(ctx).apply {
                         text = digit
-                        textSize = if (digit == "*") 34f else 28f
+                        textSize = if (digit == "*") 36f else 30f
+                        typeface = android.graphics.Typeface.create("sans-serif", android.graphics.Typeface.NORMAL)
                         setTextColor(ContextCompat.getColor(ctx, digitColor))
                         gravity = Gravity.CENTER
                         includeFontPadding = false

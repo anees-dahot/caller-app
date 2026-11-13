@@ -61,19 +61,34 @@ object Dialer {
         return try { tm.getPhoneAccount(h)?.label?.toString() } catch (_: Exception) { null } ?: "SIM"
     }
 
-    /** Place call. With 2+ SIMs and no default, ask first. */
-    fun call(a: Activity, number: String) {
+    const val REQ_CALL = 7
+    private var pendingNumber: String? = null
+
+    /** Call from onRequestPermissionsResult: places the call that was waiting for CALL_PHONE. */
+    fun onPermissionResult(a: Activity, requestCode: Int, grants: IntArray) {
+        if (requestCode != REQ_CALL) return
+        val n = pendingNumber
+        pendingNumber = null
+        if (n != null && grants.isNotEmpty() && grants[0] == PackageManager.PERMISSION_GRANTED) call(a, n, ask = a !is CallRouterActivity)
+    }
+
+    /**
+     * Place call. With 2+ SIMs and no default, ask first.
+     * [ask] = false skips our SIM dialog (Telecom then asks), for activities that finish at once.
+     */
+    fun call(a: Activity, number: String, ask: Boolean = true) {
         val clean = number.trim()
         if (clean.isEmpty()) return
         if (ContextCompat.checkSelfPermission(a, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            a.requestPermissions(arrayOf(Manifest.permission.CALL_PHONE), 7)
+            pendingNumber = clean
+            a.requestPermissions(arrayOf(Manifest.permission.CALL_PHONE), REQ_CALL)
             return
         }
         val accts = accounts(a)
         val tm = a.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
         @SuppressLint("MissingPermission")
         val def = try { tm.getDefaultOutgoingPhoneAccount("tel") } catch (_: Exception) { null }
-        if (accts.size > 1 && def == null) {
+        if (ask && accts.size > 1 && def == null && !a.isFinishing) {
             val labels = accts.mapIndexed { i, h -> "${i + 1}  ${accountLabel(a, h)}" }.toTypedArray()
             AlertDialog.Builder(a)
                 .setTitle("Call with")
@@ -92,7 +107,11 @@ object Dialer {
             tm.placeCall(uri, extras)
         } catch (e: Exception) {
             try {
-                ctx.startActivity(Intent(Intent.ACTION_CALL, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                // Never route ACTION_CALL back to ourselves (CallRouterActivity) or it loops.
+                val i = Intent(Intent.ACTION_CALL, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                val target = i.resolveActivity(ctx.packageManager)
+                if (target == null || target.packageName == ctx.packageName) throw e
+                ctx.startActivity(i)
             } catch (_: Exception) {
                 Toast.makeText(ctx, "Can't place call", Toast.LENGTH_SHORT).show()
             }

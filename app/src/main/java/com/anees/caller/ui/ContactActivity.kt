@@ -42,9 +42,16 @@ class ContactActivity : AppCompatActivity() {
                 else -> null
             }
             val nums = c?.numbers?.map { it.number } ?: listOfNotNull(bareNumber)
-            val hist = nums.flatMap { Repo.loadCalls(this, 50, it) }.sortedByDescending { it.date }.take(30)
+            // Match numbers loosely: call log may store +92300… while contact has 0300….
+            val hist = if (nums.isEmpty()) emptyList()
+            else Repo.loadCalls(this, 1000).filter { e -> nums.any { Repo.same(it, e.number) } }.take(30)
             main.post { if (!isFinishing) bind(c, hist) }
         }.start()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Dialer.onPermissionResult(this, requestCode, grantResults)
     }
 
     private fun bind(c: Contact?, history: List<CallEntry>) {

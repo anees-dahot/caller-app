@@ -17,7 +17,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="68dp"
+        android:layout_height="80dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="24dp"
@@ -28,16 +28,19 @@
         <TextView
             android:id="@+id/number"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_weight="1"
-            android:ellipsize="start"
+            android:fontFamily="sans-serif-light"
             android:fontFeatureSettings="tnum"
             android:gravity="center"
             android:hint="Enter number"
-            android:singleLine="true"
+            android:maxLines="1"
             android:textColor="@color/ink"
             android:textColorHint="@color/ink_3"
-            android:textSize="34sp" />
+            android:textSize="38sp"
+            app:autoSizeMaxTextSize="38sp"
+            app:autoSizeMinTextSize="20sp"
+            app:autoSizeTextType="uniform" />
 
         <ImageButton
             android:id="@+id/backspace"
@@ -59,8 +62,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="96dp"
+        android:layout_marginBottom="4dp"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingStart="28dp"
@@ -72,11 +75,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:background="@drawable/row_bg"
+                android:background="@drawable/pill_soft"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
                 android:text="Save"
                 android:textColor="@color/accent"
                 android:textSize="15sp" />
@@ -84,11 +87,11 @@
 
         <ImageButton
             android:id="@+id/callBtn"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:background="@drawable/round_go"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:background="@drawable/fab_go"
             android:contentDescription="Call"
-            android:elevation="2dp"
+            android:elevation="8dp"
             android:src="@drawable/ic_call"
             app:tint="#FFFFFF" />
 
